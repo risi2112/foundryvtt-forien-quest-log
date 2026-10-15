@@ -217,7 +217,9 @@ export class FQLHooks
    {
       if (game.user.isGM || !game.settings.get(constants.moduleName, settings.hideFQLFromPlayers))
       {
-         controls.notes.tools = foundry.utils.mergeObject(controls.notes.tools, FoundryUIManager.noteControls);
+         if (!controls?.notes) { return; }
+
+         controls.notes.tools = foundry.utils.mergeObject(controls.notes.tools ?? {}, FoundryUIManager.noteControls);
       }
    }
 
@@ -482,7 +484,7 @@ export class FQLHooks
          button.innerText = game.i18n.localize('ForienQuestLog.QuestLog.Title');
 
          let footer = html.querySelector('.directory-footer');
-         if (footer.length === 0)
+         if (!footer)
          {
             footer = document.createElement("footer");
             footer.classList.add("directory-footer");
@@ -499,10 +501,7 @@ export class FQLHooks
          if (folder !== void 0)
          {
             const element = html.querySelector(`.folder[data-folder-id="${folder.id}"]`);
-            if (element !== void 0)
-            {
-               element.remove();
-            }
+            if (element) { element.remove(); }
          }
       }
    }
@@ -522,9 +521,10 @@ export class FQLHooks
       const folder = Utils.getQuestFolder();
       if (folder)
       {
-         const option = html.find(`option[value="${folder.id}"]`);
+         // Handle both ApplicationV1 (jQuery) and ApplicationV2 (HTMLElement) render hook arguments.
+         const root = typeof jQuery !== 'undefined' && html instanceof jQuery ? html[0] : html;
 
-         if (option) { option.remove(); }
+         root?.querySelectorAll?.(`option[value="${folder.id}"]`).forEach((option) => option.remove());
       }
    }
 

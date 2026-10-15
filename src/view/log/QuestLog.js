@@ -230,7 +230,7 @@ export class QuestLog extends foundry.appv1.api.Application
    {
       await super._render(force, options);
 
-      if (this._state === Application.RENDER_STATES.RENDERED && typeof options.tabId === 'string' &&
+      if (this._state === foundry.appv1.api.Application.RENDER_STATES.RENDERED && typeof options.tabId === 'string' &&
        options.tabId in questStatus)
       {
          if (options.tabId === questStatus.inactive)

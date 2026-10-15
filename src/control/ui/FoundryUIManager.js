@@ -318,7 +318,7 @@ export class FoundryUIManager
       const tracker = ViewManager.questTracker;
 
       // Make sure the tracker is rendered or rendering.
-      if (!tracker.rendered && Application.RENDER_STATES.RENDERING !== tracker._state) { return; }
+      if (!tracker.rendered && foundry.appv1.api.Application.RENDER_STATES.RENDERING !== tracker._state) { return; }
 
       const boundaries = FoundryUIManager.#uiState.boundaries;
 

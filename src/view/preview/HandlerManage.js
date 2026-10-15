@@ -1,4 +1,5 @@
 import {
+   FVTTCompat,
    QuestDB,
    ViewManager }                       from '../../control/index.js';
 
@@ -53,16 +54,16 @@ export class HandlerManage
       {
          if (!questPreview._ownershipControl)
          {
-            questPreview._ownershipControl = new FQLDocumentOwnershipConfig(quest.entry, {
-               top: Math.min(questPreview.position.top, window.innerHeight - 350),
-               left: questPreview.position.left + 125
-            });
+            // DocumentOwnershipConfig is ApplicationV2; use the options object constructor signature.
+            questPreview._ownershipControl = new FQLDocumentOwnershipConfig({ document: quest.entry });
          }
 
-         questPreview._ownershipControl.render(true, {
-            top: Math.min(questPreview.position.top, window.innerHeight - 350),
-            left: questPreview.position.left + 125,
-            focus: true
+         questPreview._ownershipControl.render({
+            force: true,
+            position: {
+               top: Math.min(questPreview.position.top, window.innerHeight - 350),
+               left: questPreview.position.left + 125
+            }
          });
       }
    }
@@ -105,7 +106,7 @@ export class HandlerManage
    static async setSplashImage(quest, questPreview)
    {
       const currentPath = quest.splash;
-      await new FilePicker({
+      await FVTTCompat.filePicker({
          type: 'image',
          current: currentPath,
          callback: async (path) =>

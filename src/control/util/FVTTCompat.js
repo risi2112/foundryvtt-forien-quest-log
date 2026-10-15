@@ -57,6 +57,44 @@ export class FVTTCompat
    }
 
    /**
+    * Brings an application to the front. ApplicationV2 removed the deprecated `bringToTop` alias in V14 in favor of
+    * `bringToFront`, while ApplicationV1 still only provides `bringToTop`.
+    *
+    * @param {object}   app - An ApplicationV1 or ApplicationV2 instance.
+    */
+   static bringToFront(app)
+   {
+      if (typeof app?.bringToFront === 'function') { app.bringToFront(); }
+      else if (typeof app?.bringToTop === 'function') { app.bringToTop(); }
+   }
+
+   /**
+    * Creates a core FilePicker using the configured implementation.
+    *
+    * @param {object}   options - FilePicker options.
+    *
+    * @returns {FilePicker} FilePicker instance.
+    */
+   static filePicker(options)
+   {
+      const FilePickerImpl = foundry.applications?.apps?.FilePicker?.implementation ?? globalThis.FilePicker;
+      return new FilePickerImpl(options);
+   }
+
+   /**
+    * Creates an ImagePopout using the ApplicationV2 constructor signature.
+    *
+    * @param {string}   src - Image source.
+    *
+    * @returns {ImagePopout} ImagePopout instance.
+    */
+   static imagePopout(src)
+   {
+      const ImagePopoutImpl = foundry.applications?.apps?.ImagePopout ?? globalThis.ImagePopout;
+      return new ImagePopoutImpl({ src, shareable: true });
+   }
+
+   /**
     * Returns folder contents.
     *
     * @param {Folder}   folder -
@@ -119,7 +157,8 @@ export class FVTTCompat
          // Attempt to retrieve content from ProseMirror editor instance.
          if (editor?.instance?.view)
          {
-            content = globalThis.ProseMirror.dom.serializeString(editor.instance.view.state.doc.content);
+            const pmDOM = foundry.prosemirror?.dom ?? globalThis.ProseMirror?.dom;
+            content = pmDOM.serializeString(editor.instance.view.state.doc.content);
          }
       }
       catch (err) { /**/ }

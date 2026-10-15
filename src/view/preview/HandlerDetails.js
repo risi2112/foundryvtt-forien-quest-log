@@ -1,4 +1,5 @@
 import {
+   FVTTCompat,
    Socket,
    Utils }           from '../../control/index.js';
 
@@ -175,7 +176,7 @@ export class HandlerDetails
    {
       const currentPath = quest.giver === 'abstract' ? quest.image : void 0;
 
-      new FilePicker({
+      FVTTCompat.filePicker({
          type: 'image',
          current: currentPath,
          callback: async (path) =>
@@ -640,7 +641,7 @@ export class HandlerDetails
       if (!reward) { return; }
 
       const currentPath = reward.data.img;
-      await new FilePicker({
+      await FVTTCompat.filePicker({
          type: 'image',
          current: currentPath,
          callback: async (path) =>
@@ -696,16 +697,16 @@ export class HandlerDetails
          {
             if (reward.data?.img?.length)
             {
-               questPreview._rewardImagePopup.object = reward.data.img;
+               questPreview._rewardImagePopup.close();
+               questPreview._rewardImagePopup = FVTTCompat.imagePopout(reward.data.img);
                questPreview._rewardImagePopup.render(true);
-               questPreview._rewardImagePopup.bringToTop();
             }
          }
          else
          {
             if (reward.data?.img?.length)
             {
-               questPreview._rewardImagePopup = new ImagePopout(reward.data.img, { shareable: true });
+               questPreview._rewardImagePopup = FVTTCompat.imagePopout(reward.data.img);
                questPreview._rewardImagePopup.render(true);
             }
          }
@@ -800,11 +801,11 @@ export class HandlerDetails
    {
       if (questPreview._splashImagePopup !== void 0 && questPreview._splashImagePopup.rendered)
       {
-         questPreview._splashImagePopup.bringToTop();
+         FVTTCompat.bringToFront(questPreview._splashImagePopup);
       }
       else
       {
-         questPreview._splashImagePopup = new ImagePopout(quest.splash, { shareable: true });
+         questPreview._splashImagePopup = FVTTCompat.imagePopout(quest.splash);
          questPreview._splashImagePopup.render(true);
       }
    }

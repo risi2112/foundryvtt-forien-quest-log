@@ -392,7 +392,7 @@ export class Utils
          {
             if (document.sheet.rendered)
             {
-               document.sheet.bringToTop();
+               FVTTCompat.bringToFront(document.sheet);
                return null;
             }
             else
