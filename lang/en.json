@@ -267,7 +267,7 @@
       "PrimaryQuest": "Primary Quest"
     },
     "SceneControl": {
-      "Tooltip": "Quest Log<br>Right-click: toggle Quest Tracker"
+      "Title": "Quests"
     }
   }
 }
