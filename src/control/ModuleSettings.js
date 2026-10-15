@@ -171,6 +171,19 @@ export class ModuleSettings
          }
       });
 
+      game.settings.register(constants.moduleName, settings.carolingianTheme, {
+         name: 'ForienQuestLog.Settings.carolingianTheme.Enable',
+         hint: 'ForienQuestLog.Settings.carolingianTheme.EnableHint',
+         scope: this.#scope.client,
+         config: game.modules.get('crlngn-ui')?.active ?? false,
+         default: true,
+         type: Boolean,
+         onChange: (value) => document.body.classList.toggle('fql-cui', value)
+      });
+
+      // Apply the Carolingian UI theme class; the styles only take effect when Carolingian UI is also active.
+      document.body.classList.toggle('fql-cui', game.settings.get(constants.moduleName, settings.carolingianTheme));
+
       game.settings.register(constants.moduleName, settings.navStyle, {
          name: 'ForienQuestLog.Settings.navStyle.Enable',
          hint: 'ForienQuestLog.Settings.navStyle.EnableHint',

@@ -85,6 +85,7 @@ const settings = {
    allowPlayersAccept: 'allowPlayersAccept',
    allowPlayersCreate: 'allowPlayersCreate',
    allowPlayersDrag: 'allowPlayersDrag',
+   carolingianTheme: 'carolingianTheme',
    countHidden: 'countHidden',
    defaultAbstractRewardImage: 'defaultAbstractRewardImage',
    defaultPermission: 'defaultPermission',

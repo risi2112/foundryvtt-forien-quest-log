@@ -258,6 +258,10 @@
       "trustedPlayerEdit": {
         "Enable": "Allow Trusted Player Quest Editing",
         "EnableHint": "Check to allow trusted players to have expanded quest editing and status control capabilities over quests they have ownership."
+      },
+      "carolingianTheme": {
+        "Enable": "Match Carolingian UI",
+        "EnableHint": "Style the Quest Log, quest sheets and Quest Tracker to match Carolingian UI's colors, fonts and glass effect. Only applies while Carolingian UI is active."
       }
     },
     "Tooltips": {
