@@ -530,7 +530,7 @@ export class FQLHooks
    }
 
    /**
-    * Adds a dedicated Quest Log button to the left-hand scene controls, below the core layer buttons. Left click opens
+    * Adds a dedicated Quest Log button to the left-hand scene controls, directly below the Tokens button. Left click opens
     * the quest log and right click toggles the quest tracker.
     *
     * The button is added to the rendered markup rather than registered as a scene control group, as a control group
@@ -586,7 +586,11 @@ export class FQLHooks
 
       const li = document.createElement(referenceLi.tagName);
       li.append(button);
-      menu.append(li);
+
+      // Place directly below the Tokens control; fall back to the end of the list if it isn't found.
+      const tokensLi = menu.querySelector('button[data-control="tokens"]')?.closest('li');
+      if (tokensLi?.parentElement === menu) { tokensLi.after(li); }
+      else { menu.append(li); }
    }
 
    /**
