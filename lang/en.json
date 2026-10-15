@@ -265,6 +265,9 @@
       "Edit": "Edit",
       "HiddenQuestNoPlayers": "This Quest is hidden from all players.",
       "PrimaryQuest": "Primary Quest"
+    },
+    "SceneControl": {
+      "Tooltip": "Quest Log<br>Right-click: toggle Quest Tracker"
     }
   }
 }

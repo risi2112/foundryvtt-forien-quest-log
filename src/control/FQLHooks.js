@@ -75,6 +75,7 @@ export class FQLHooks
       Hooks.on('hotbarDrop', FQLHooks.hotbarDrop);
       Hooks.on('renderJournalDirectory', FQLHooks.renderJournalDirectory);
       Hooks.on('renderJournalSheet', FQLHooks.renderJournalSheet);
+      Hooks.on('renderSceneControls', FQLHooks.renderSceneControls);
 
       // FQL specific hooks.
       Hooks.on('ForienQuestLog.Open.QuestLog', FQLHooks.openQuestLog);
@@ -526,6 +527,66 @@ export class FQLHooks
 
          root?.querySelectorAll?.(`option[value="${folder.id}"]`).forEach((option) => option.remove());
       }
+   }
+
+   /**
+    * Adds a dedicated Quest Log button to the left-hand scene controls, below the core layer buttons. Left click opens
+    * the quest log and right click toggles the quest tracker.
+    *
+    * The button is added to the rendered markup rather than registered as a scene control group, as a control group
+    * without a canvas layer would switch the toolbar away from the current layer. Cloning the classes of an existing
+    * layer button keeps it styled the same as core buttons. If the expected markup isn't found nothing is added.
+    *
+    * @param {SceneControls}        app - The SceneControls app.
+    *
+    * @param {HTMLElement|JQuery}   html - The rendered element.
+    */
+   static renderSceneControls(app, html)
+   {
+      if (!game.user.isGM && game.settings.get(constants.moduleName, settings.hideFQLFromPlayers)) { return; }
+
+      const root = typeof jQuery !== 'undefined' && html instanceof jQuery ? html[0] : html;
+      if (!(root instanceof HTMLElement) || root.querySelector('.fql-scene-control')) { return; }
+
+      // Use an existing layer button as a template for styling and placement.
+      const reference = root.querySelector('button[data-control]');
+      const referenceLi = reference?.closest('li');
+      const menu = referenceLi?.parentElement;
+      if (!menu) { return; }
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = reference.className;
+
+      // Strip the reference control's own icon and state classes before applying the FQL icon.
+      const referenceIcon = app?.controls?.[reference.dataset.control]?.icon ?? '';
+      for (const cls of [...referenceIcon.split(/\s+/), 'active']) { if (cls) { button.classList.remove(cls); } }
+      button.classList.add('fql-scene-control', 'fas', 'fa-scroll');
+
+      const title = game.i18n.localize('ForienQuestLog.QuestLog.Title');
+      button.setAttribute('aria-label', title);
+      button.setAttribute('aria-pressed', 'false');
+      button.dataset.tooltip = game.i18n.localize('ForienQuestLog.SceneControl.Tooltip');
+      if (reference.dataset.tooltipDirection) { button.dataset.tooltipDirection = reference.dataset.tooltipDirection; }
+
+      button.addEventListener('click', (event) =>
+      {
+         event.preventDefault();
+         event.stopPropagation();
+         ViewManager.questLog?.render(true, { focus: true });
+      });
+
+      button.addEventListener('contextmenu', async (event) =>
+      {
+         event.preventDefault();
+         event.stopPropagation();
+         const enabled = game.settings.get(constants.moduleName, settings.questTrackerEnable);
+         await game.settings.set(constants.moduleName, settings.questTrackerEnable, !enabled);
+      });
+
+      const li = document.createElement(referenceLi.tagName);
+      li.append(button);
+      menu.append(li);
    }
 
    /**
