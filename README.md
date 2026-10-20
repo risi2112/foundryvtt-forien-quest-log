@@ -1,3 +1,12 @@
+> **This is a Foundry V14 fork** of Forien's Quest Log by [Forien](https://github.com/Forien/foundryvtt-forien-quest-log),
+> with V14 compatibility fixes and a dedicated **Quests** toolbar group.
+>
+> **Install:** in Foundry, go to **Add-on Modules → Install Module**, paste this into **Manifest URL** and click **Install**:
+>
+> ```
+> https://github.com/risi2112/foundryvtt-forien-quest-log/releases/latest/download/module.json
+> ```
+
 # FoundryVTT - Forien's Quest Log
 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/Forien/foundryvtt-forien-quest-log?style=for-the-badge&label=Forien%27s+Quest+Log+version)
