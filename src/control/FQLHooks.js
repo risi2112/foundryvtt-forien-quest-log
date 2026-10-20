@@ -232,9 +232,9 @@ export class FQLHooks
          if (typeof control?.order === 'number' && control.order > tokenOrder) { control.order += 1; }
       }
 
-      // Tool buttons only act when the tool itself is clicked, not when the group is opened from the layer button, so
-      // opening the group just shows the secondary menu.
-      const fromLayerButton = (event) => !!event?.target?.closest?.('[data-control]');
+      // Tools only act when they are clicked in the secondary tool column (#scene-controls-tools). Foundry can also
+      // fire a control's active tool when the group itself is opened; that must just show the secondary menu.
+      const fromToolColumn = (event) => !!event?.target?.closest?.('#scene-controls-tools');
 
       controls[constants.moduleName] = {
          name: constants.moduleName,
@@ -243,6 +243,10 @@ export class FQLHooks
          icon: 'fas fa-scroll',
          visible: true,
          activeTool: 'quest_log',
+
+         // This group has no canvas layer of its own, so keep the token layer active underneath it.
+         onChange: (event, active) => { if (active) { canvas?.tokens?.activate?.(); } },
+
          tools: {
             quest_log: {
                name: 'quest_log',
@@ -253,7 +257,7 @@ export class FQLHooks
                visible: true,
                onChange: (event) =>
                {
-                  if (fromLayerButton(event)) { return; }
+                  if (!fromToolColumn(event)) { return; }
                   ViewManager.questLog.render(true, { focus: true });
                }
             },
@@ -266,7 +270,7 @@ export class FQLHooks
                visible: true,
                onChange: async (event) =>
                {
-                  if (fromLayerButton(event)) { return; }
+                  if (!fromToolColumn(event)) { return; }
                   await game.settings.set(constants.moduleName, settings.questTrackerEnable, true);
                }
             }
