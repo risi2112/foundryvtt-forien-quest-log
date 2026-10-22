@@ -232,9 +232,18 @@ export class FQLHooks
          if (typeof control?.order === 'number' && control.order > tokenOrder) { control.order += 1; }
       }
 
-      // Tools only act when they are clicked in the secondary tool column (#scene-controls-tools). Foundry can also
-      // fire a control's active tool when the group itself is opened; that must just show the secondary menu.
-      const fromToolColumn = (event) => !!event?.target?.closest?.('#scene-controls-tools');
+      // A tool only acts when its own button was clicked. Foundry can also fire a group's active tool when the group
+      // itself is opened; that must just show the secondary menu. The check looks at the clicked button's own
+      // data-tool attribute rather than the column it sits in, because Foundry may re-render the toolbar before calling
+      // onChange, which detaches the clicked button from the column and makes an ancestor lookup fail.
+      const clickedTool = (event, toolName) =>
+      {
+         const toolButton = event?.target?.closest?.('[data-tool]');
+         if (toolButton?.dataset?.tool === toolName) { return true; }
+
+         console.log(`ForienQuestLog | Quests toolbar: ignored '${toolName}' change (event: ${event?.type ?? 'none'})`);
+         return false;
+      };
 
       controls[constants.moduleName] = {
          name: constants.moduleName,
@@ -258,7 +267,7 @@ export class FQLHooks
                visible: true,
                onChange: (event) =>
                {
-                  if (!fromToolColumn(event)) { return; }
+                  if (!clickedTool(event, 'quest_log')) { return; }
                   ViewManager.questLog.render(true, { focus: true });
                }
             },
@@ -271,7 +280,7 @@ export class FQLHooks
                visible: true,
                onChange: async (event) =>
                {
-                  if (!fromToolColumn(event)) { return; }
+                  if (!clickedTool(event, 'quest_tracker')) { return; }
                   await game.settings.set(constants.moduleName, settings.questTrackerEnable, true);
                }
             }

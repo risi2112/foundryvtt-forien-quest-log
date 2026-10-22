@@ -16,7 +16,7 @@
   "readme": "https://github.com/Forien/foundryvtt-forien-quest-log/blob/master/README.md",
   "bugs": "https://github.com/risi2112/foundryvtt-forien-quest-log/issues",
   "changelog": "https://github.com/risi2112/foundryvtt-forien-quest-log/releases/latest/",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "compatibility": {
     "minimum": "13",
     "verified": "14",
