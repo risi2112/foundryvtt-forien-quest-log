@@ -232,26 +232,17 @@ export class FQLHooks
          if (typeof control?.order === 'number' && control.order > tokenOrder) { control.order += 1; }
       }
 
-      // A tool only acts when its own button was clicked. Foundry can also fire a group's active tool when the group
-      // itself is opened; that must just show the secondary menu. The check looks at the clicked button's own
-      // data-tool attribute rather than the column it sits in, because Foundry may re-render the toolbar before calling
-      // onChange, which detaches the clicked button from the column and makes an ancestor lookup fail.
-      const clickedTool = (event, toolName) =>
-      {
-         const toolButton = event?.target?.closest?.('[data-tool]');
-         if (toolButton?.dataset?.tool === toolName) { return true; }
-
-         console.log(`ForienQuestLog | Quests toolbar: ignored '${toolName}' change (event: ${event?.type ?? 'none'})`);
-         return false;
-      };
-
       controls[constants.moduleName] = {
          name: constants.moduleName,
          order: tokenOrder + 1,
          title: 'ForienQuestLog.SceneControl.Title',
          icon: 'fas fa-scroll',
          visible: true,
-         activeTool: 'quest_log',
+
+         // No activeTool. Both tools are buttons, and Foundry V14 ignores clicks on whichever tool is the group's
+         // active tool (SceneControls#onChangeTool returns early when the clicked tool is already active). It also
+         // fires the active tool's onChange when the group is opened. With no active tool, opening the group just
+         // shows the menu and each button runs only when clicked.
 
          // No onChange here. This group has no canvas layer, so whatever layer was active (usually Tokens) simply stays
          // active underneath it. Calling canvas.tokens.activate() from here would make Foundry switch the toolbar back
@@ -265,11 +256,7 @@ export class FQLHooks
                icon: 'fas fa-scroll',
                button: true,
                visible: true,
-               onChange: (event) =>
-               {
-                  if (!clickedTool(event, 'quest_log')) { return; }
-                  ViewManager.questLog.render(true, { focus: true });
-               }
+               onChange: () => ViewManager.questLog.render(true, { focus: true })
             },
             quest_tracker: {
                name: 'quest_tracker',
@@ -278,11 +265,7 @@ export class FQLHooks
                icon: 'fas fa-tasks',
                button: true,
                visible: true,
-               onChange: async (event) =>
-               {
-                  if (!clickedTool(event, 'quest_tracker')) { return; }
-                  await game.settings.set(constants.moduleName, settings.questTrackerEnable, true);
-               }
+               onChange: async () => { await game.settings.set(constants.moduleName, settings.questTrackerEnable, true); }
             }
          }
       };
