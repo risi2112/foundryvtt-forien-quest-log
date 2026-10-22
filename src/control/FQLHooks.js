@@ -244,8 +244,9 @@ export class FQLHooks
          visible: true,
          activeTool: 'quest_log',
 
-         // This group has no canvas layer of its own, so keep the token layer active underneath it.
-         onChange: (event, active) => { if (active) { canvas?.tokens?.activate?.(); } },
+         // No onChange here. This group has no canvas layer, so whatever layer was active (usually Tokens) simply stays
+         // active underneath it. Calling canvas.tokens.activate() from here would make Foundry switch the toolbar back
+         // to the Tokens group, so the Quests menu could never open.
 
          tools: {
             quest_log: {
